@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8">
+<title>Final Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&amp;display=swap" rel="stylesheet">
+<style>
+body{
+  font-family:Poppins;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  padding:20px;
+  color:white;
+}
+.card{
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(15px);
+  padding:25px;
+  border-radius:20px;
+  max-width:600px;
+  margin:auto;
+}
+.row{
+  display:flex;
+  justify-content:space-between;
+  margin-top:8px;
+  background:rgba(255,255,255,0.2);
+  padding:10px;
+  border-radius:10px;
+}
+.pay-row{
+  background:rgba(0,0,0,0.3);
+  padding:10px;
+  border-radius:10px;
+  margin-top:6px;
+}
+button{
+  margin-top:15px;
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:30px;
+  background:#ff4b2b;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+h3{margin-top:15px}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h2 id="tripTitle"></h2>
+
+<div id="summary"></div>
+
+<h3>💸 Who Should Pay Whom</h3>
+<div id="settlements"></div>
+
+<button onclick="newTrip()">Start New Trip</button>
+</div>
+
+<script>
+let tripName = localStorage.getItem("tripName");
+let members = JSON.parse(localStorage.getItem("members"));
+let expenses = JSON.parse(localStorage.getItem("expenses"));
+
+if(!tripName || !members || !expenses){
+  alert("No trip data found!");
+  window.location="index.html";
+}
+
+document.getElementById("tripTitle").innerText = "Trip: " + tripName;
+
+// ---- BASIC CALCULATION ----
+let total = expenses.reduce((s,e)=>s+e.amount,0);
+let perPerson = total / members.length;
+
+let paid = {};
+members.forEach(m => paid[m] = 0);
+expenses.forEach(e => paid[e.by] += e.amount);
+
+let html = `
+<p><b>Total Expense:</b> ₹${total.toFixed(0)}</p>
+<p><b>Per Person:</b> ₹${perPerson.toFixed(0)}</p>
+<hr>
+`;
+
+let balances = [];
+
+for(let m in paid){
+  let balance = paid[m] - perPerson;
+  html += `
+    <div class="row">
+      <span>${m}</span>
+      <b>${balance >= 0 ? "+₹"+balance.toFixed(0) : "-₹"+Math.abs(balance).toFixed(0)}</b>
+    </div>
+  `;
+  balances.push({name:m, balance:balance});
+}
+
+document.getElementById("summary").innerHTML = html;
+
+// ---- PAY WHO LOGIC ----
+let payers = balances.filter(p => p.balance < 0);
+let receivers = balances.filter(p => p.balance > 0);
+
+let settlementHTML = "";
+
+let i=0, j=0;
+while(i < payers.length && j < receivers.length){
+  let payAmount = Math.min(
+    Math.abs(payers[i].balance),
+    receivers[j].balance
+  );
+
+  settlementHTML += `
+    <div class="pay-row">
+      💰 <b>${payers[i].name}</b> should pay 
+      <b>₹${payAmount.toFixed(0)}</b> to 
+      <b>${receivers[j].name}</b>
+    </div>
+  `;
+
+  payers[i].balance += payAmount;
+  receivers[j].balance -= payAmount;
+
+  if(Math.abs(payers[i].balance) < 1) i++;
+  if(Math.abs(receivers[j].balance) < 1) j++;
+}
+
+document.getElementById("settlements").innerHTML =
+  settlementHTML || "<p>All settled ✔</p>";
+
+function newTrip(){
+  localStorage.clear();
+  window.location="index.html";
+}
+</script>
+
+</body>
+</html>

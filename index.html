@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8">
+<title>Trip Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&amp;display=swap" rel="stylesheet">
+<style>
+body{
+  font-family:Poppins;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.card{
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(15px);
+  padding:30px;
+  border-radius:20px;
+  color:#fff;
+  width:380px;
+  text-align:center;
+}
+.logo{
+  font-size:60px;
+  margin-bottom:10px;
+}
+h2{margin-bottom:10px}
+input{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  margin-top:8px;
+}
+button{
+  margin-top:12px;
+  padding:10px;
+  width:100%;
+  border:none;
+  border-radius:30px;
+  background:#ff4b2b;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+.member-row{
+  display:flex;
+  gap:5px;
+  margin-top:5px;
+}
+.member-row button{
+  width:40px;
+  background:red;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <!-- ✅ LOGO ADDED -->
+  <div class="logo">✈️</div>
+
+  <h2>Trip Contribution Manager</h2>
+
+  <input id="tripName" placeholder="Trip Name">
+
+  <div id="membersBox">
+    <input placeholder="Member Name">
+  </div>
+
+  <button onclick="addMember()">+ Add Member</button>
+  <button onclick="startTrip()">Get Started →</button>
+</div>
+
+<script>
+function addMember(){
+  let div=document.createElement("div");
+  div.className="member-row";
+  div.innerHTML=`
+    <input placeholder="Member Name">
+    <button onclick="this.parentElement.remove()">✖</button>
+  `;
+  document.getElementById("membersBox").appendChild(div);
+}
+
+function startTrip(){
+  let trip=document.getElementById("tripName").value;
+  let inputs=document.querySelectorAll("#membersBox input");
+  let members=[];
+
+  inputs.forEach(i=>{
+    if(i.value.trim()!=="") members.push(i.value.trim());
+  });
+
+  if(trip===""||members.length<1){
+    alert("Enter trip name and at least 1 member");
+    return;
+  }
+
+  localStorage.setItem("tripName",trip);
+  localStorage.setItem("members",JSON.stringify(members));
+  localStorage.setItem("expenses","[]");
+
+  window.location="dashboard.html";
+}
+</script>
+
+</body>
+</html>
