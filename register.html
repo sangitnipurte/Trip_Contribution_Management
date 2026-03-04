@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register - TRIPHUB</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+<style>
+*{
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  margin:0;
+  background:#f3f4f6;
+}
+
+/* ===== HEADER ===== */
+.header{
+  width:100%;
+  padding:15px 30px;
+  display:flex;
+  align-items:center;
+  gap:15px;
+  background:linear-gradient(90deg,#2563eb,#1e3a8a);
+  color:white;
+}
+
+.logo-box{
+  width:50px;
+  height:50px;
+  background:white;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.logo-box img{
+  width:35px;
+  height:35px;
+  object-fit:contain;
+}
+
+.header-text h1{
+  margin:0;
+  font-size:22px;
+}
+
+.header-text p{
+  margin:0;
+  font-size:13px;
+  opacity:0.9;
+}
+
+/* ===== CONTAINER ===== */
+.container{
+  display:flex;
+  justify-content:center;
+  padding:40px 15px;
+}
+
+/* ===== CARD ===== */
+.card{
+  background:#ffffff;
+  width:100%;
+  max-width:380px;
+  padding:25px;
+  border-radius:18px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.1);
+  text-align:center;
+}
+
+.card h2{
+  margin-bottom:20px;
+}
+
+/* ===== INPUTS ===== */
+input{
+  width:100%;
+  padding:12px;
+  border:1px solid #ccc;
+  border-radius:10px;
+  outline:none;
+  font-size:14px;
+  margin-bottom:12px;
+}
+
+input:focus{
+  border-color:#2563eb;
+}
+
+/* ===== BUTTON ===== */
+button{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  font-size:14px;
+  cursor:pointer;
+  background:#2563eb;
+  color:white;
+}
+
+button:hover{
+  opacity:0.9;
+}
+
+p{
+  margin-top:15px;
+  font-size:14px;
+}
+
+a{
+  color:#2563eb;
+  text-decoration:none;
+  font-weight:500;
+}
+
+@media (min-width:768px){
+  .card{
+    max-width:450px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo-box">
+    <img src="logo.png" alt="Logo">
+  </div>
+  <div class="header-text">
+    <h1>TRIPHUB</h1>
+    <p>Trip Contribution Management System</p>
+  </div>
+</div>
+
+<!-- REGISTER CARD -->
+<div class="container">
+  <div class="card">
+    <h2>Create Account</h2>
+
+    <input type="text" id="name" placeholder="Full Name">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="register()">Register</button>
+
+    <p>Already have an account? <a href="index.html">Login</a></p>
+  </div>
+</div>
+
+<script>
+function register(){
+  let name=document.getElementById("name").value.trim();
+  let email=document.getElementById("email").value.trim();
+  let password=document.getElementById("password").value.trim();
+
+  if(name===""||email===""||password===""){
+    alert("Please fill all fields");
+    return;
+  }
+
+  let user={
+    name:name,
+    email:email,
+    password:password
+  };
+
+  localStorage.setItem("user",JSON.stringify(user));
+
+  alert("Account created successfully!");
+  window.location="index.html";
+}
+</script>
+
+</body>
+</html>
