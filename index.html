@@ -1,112 +1,187 @@
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8">
-<title>Trip Contribution Management</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins&amp;display=swap" rel="stylesheet">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - TRIPHUB</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
 <style>
+*{
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
 body{
-  font-family:Poppins;
-  background:linear-gradient(135deg,#667eea,#764ba2);
+  margin:0;
+  background:#f3f4f6;
+}
+
+/* ===== HEADER ===== */
+.header{
+  width:100%;
+  padding:15px 30px;
+  display:flex;
+  align-items:center;
+  gap:15px;
+  background:linear-gradient(90deg,#2563eb,#1e3a8a);
+  color:white;
+}
+
+.logo-box{
+  width:50px;
+  height:50px;
+  background:white;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.logo-box img{
+  width:35px;
+  height:35px;
+  object-fit:contain;
+}
+
+.header-text h1{
+  margin:0;
+  font-size:22px;
+}
+
+.header-text p{
+  margin:0;
+  font-size:13px;
+  opacity:0.9;
+}
+
+/* ===== CONTAINER ===== */
+.container{
   display:flex;
   justify-content:center;
-  align-items:center;
-  height:100vh;
+  padding:40px 15px;
 }
+
+/* ===== CARD ===== */
 .card{
-  background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(15px);
-  padding:30px;
-  border-radius:20px;
-  color:#fff;
-  width:380px;
+  background:#ffffff;
+  width:100%;
+  max-width:380px;
+  padding:25px;
+  border-radius:18px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.1);
   text-align:center;
 }
-.logo{
-  font-size:60px;
-  margin-bottom:10px;
+
+.card h2{
+  margin-bottom:20px;
 }
-h2{margin-bottom:10px}
+
+/* ===== INPUTS ===== */
 input{
   width:100%;
-  padding:10px;
+  padding:12px;
+  border:1px solid #ccc;
   border-radius:10px;
-  border:none;
-  margin-top:8px;
+  outline:none;
+  font-size:14px;
+  margin-bottom:12px;
 }
+
+input:focus{
+  border-color:#2563eb;
+}
+
+/* ===== BUTTON ===== */
 button{
-  margin-top:12px;
-  padding:10px;
   width:100%;
+  padding:12px;
+  border-radius:12px;
   border:none;
-  border-radius:30px;
-  background:#ff4b2b;
-  color:white;
-  font-weight:bold;
+  font-size:14px;
   cursor:pointer;
+  background:#2563eb;
+  color:white;
 }
-.member-row{
-  display:flex;
-  gap:5px;
-  margin-top:5px;
+
+button:hover{
+  opacity:0.9;
 }
-.member-row button{
-  width:40px;
-  background:red;
+
+p{
+  margin-top:15px;
+  font-size:14px;
+}
+
+a{
+  color:#2563eb;
+  text-decoration:none;
+  font-weight:500;
+}
+
+@media (min-width:768px){
+  .card{
+    max-width:450px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-  <!-- ✅ LOGO ADDED -->
-  <div class="logo">✈️</div>
-
-  <h2>Trip Contribution Manager</h2>
-
-  <input id="tripName" placeholder="Trip Name">
-
-  <div id="membersBox">
-    <input placeholder="Member Name">
+<!-- HEADER -->
+<div class="header">
+  <div class="logo-box">
+    <img src="logo.png" alt="Logo">
   </div>
+  <div class="header-text">
+    <h1>TRIPHUB</h1>
+    <p>Trip Contribution Management System</p>
+  </div>
+</div>
 
-  <button onclick="addMember()">+ Add Member</button>
-  <button onclick="startTrip()">Get Started →</button>
+<!-- LOGIN CARD -->
+<div class="container">
+  <div class="card">
+    <h2>Login to Your Account</h2>
+
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+
+    <p>Don't have an account? <a href="register.html">Register</a></p>
+  </div>
 </div>
 
 <script>
-function addMember(){
-  let div=document.createElement("div");
-  div.className="member-row";
-  div.innerHTML=`
-    <input placeholder="Member Name">
-    <button onclick="this.parentElement.remove()">✖</button>
-  `;
-  document.getElementById("membersBox").appendChild(div);
+
+// If already logged in → go to trip page
+if(localStorage.getItem("loggedIn")==="true"){
+  window.location="trip.html";
 }
 
-function startTrip(){
-  let trip=document.getElementById("tripName").value;
-  let inputs=document.querySelectorAll("#membersBox input");
-  let members=[];
+function login(){
+  let email=document.getElementById("email").value.trim();
+  let password=document.getElementById("password").value.trim();
 
-  inputs.forEach(i=>{
-    if(i.value.trim()!=="") members.push(i.value.trim());
-  });
+  let user=JSON.parse(localStorage.getItem("user"));
 
-  if(trip===""||members.length<1){
-    alert("Enter trip name and at least 1 member");
+  if(!user){
+    alert("No account found. Please register first.");
     return;
   }
 
-  localStorage.setItem("tripName",trip);
-  localStorage.setItem("members",JSON.stringify(members));
-  localStorage.setItem("expenses","[]");
-
-  window.location="dashboard.html";
+  if(email===user.email && password===user.password){
+    localStorage.setItem("loggedIn","true");
+    window.location="trip.html";
+  } else {
+    alert("Invalid email or password");
+  }
 }
+
 </script>
 
 </body>
-
 </html>
